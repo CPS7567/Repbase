@@ -1,0 +1,23 @@
+GYM(gym_id PK, gym_name UNIQUE, location, contact_number)
+
+GYM_ADMIN(admin_id PK, name, email UNIQUE, phone, gym_id FK)
+
+MEMBER(member_id PK, name, date_of_birth, gender, email UNIQUE, phone, gym_id FK)
+
+TRAINER(trainer_id PK, name, specialization, phone, schedule, gym_id FK)
+
+MEMBERSHIP_PLAN(plan_id PK, plan_name, duration, price, access_level, gym_id FK)
+
+MEMBERSHIP(member_id PK FK, plan_id FK, start_date, expiry_date, status)
+
+PAYMENT(payment_id PK, payment_date, amount, payment_method, payment_status, member_id FK)
+
+WORKOUT_SESSION(session_id PK, workout_date, duration, member_id FK)
+
+SET_LOG(session_id PK FK, set_no PK, exercise_id FK, reps, weight)
+
+EXERCISE(exercise_id PK, exercise_name UNIQUE, equipment, exercise_type)
+
+MUSCLE_GROUP(muscle_id PK, muscle_name UNIQUE)
+
+EXERCISE_MUSCLE(exercise_id PK FK, muscle_id PK FK)
