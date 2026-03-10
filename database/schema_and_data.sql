@@ -21,7 +21,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
--- SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '3eadfd94-b576-11f0-abe3-bceca01a814e:1-701';
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '3eadfd94-b576-11f0-abe3-bceca01a814e:1-703';
 
 --
 -- Table structure for table `exercise`
@@ -313,6 +313,30 @@ LOCK TABLES `payment` WRITE;
 INSERT INTO `payment` VALUES (1,'2026-01-01',1500.00,'UPI','Completed',1),(2,'2026-01-05',4000.00,'Credit Card','Completed',2),(3,'2026-01-10',1200.00,'Cash','Completed',3);
 /*!40000 ALTER TABLE `payment` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = cp850 */ ;
+/*!50003 SET character_set_results = cp850 */ ;
+/*!50003 SET collation_connection  = cp850_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `update_membership_after_payment` AFTER INSERT ON `payment` FOR EACH ROW BEGIN
+    -- 'Completed' is the standard status seen in your backup data
+    IF NEW.payment_status = 'Completed' THEN
+        UPDATE membership m
+        JOIN membership_plan p ON m.plan_id = p.plan_id
+        SET m.expiry_date = DATE_ADD(CURDATE(), INTERVAL p.duration DAY),
+            m.status = 'Active'
+        WHERE m.member_id = NEW.member_id;
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `set_log`
@@ -403,6 +427,34 @@ LOCK TABLES `workout_session` WRITE;
 /*!40000 ALTER TABLE `workout_session` DISABLE KEYS */;
 /*!40000 ALTER TABLE `workout_session` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = cp850 */ ;
+/*!50003 SET character_set_results = cp850 */ ;
+/*!50003 SET collation_connection  = cp850_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `check_membership_before_workout` BEFORE INSERT ON `workout_session` FOR EACH ROW BEGIN
+    DECLARE m_status VARCHAR(20);
+    
+    -- Matches table 'membership' and column 'status' from your schema 
+    SELECT status INTO m_status 
+    FROM membership 
+    WHERE member_id = NEW.member_id;
+
+    -- Custom logic: Block if not 'Active'
+    IF m_status != 'Active' OR m_status IS NULL THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Workout denied: Membership is expired or inactive.';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -414,4 +466,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-02-09  1:05:31
+-- Dump completed on 2026-03-10 21:51:35
