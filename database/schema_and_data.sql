@@ -21,7 +21,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '3eadfd94-b576-11f0-abe3-bceca01a814e:1-703';
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '3eadfd94-b576-11f0-abe3-bceca01a814e:1-711';
 
 --
 -- Table structure for table `exercise`
@@ -88,13 +88,13 @@ DROP TABLE IF EXISTS `gym`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `gym` (
-  `gym_id` int NOT NULL,
+  `gym_id` int NOT NULL AUTO_INCREMENT,
   `gym_name` varchar(100) NOT NULL,
   `location` varchar(100) DEFAULT NULL,
   `contact_number` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`gym_id`),
   UNIQUE KEY `gym_name` (`gym_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +103,7 @@ CREATE TABLE `gym` (
 
 LOCK TABLES `gym` WRITE;
 /*!40000 ALTER TABLE `gym` DISABLE KEYS */;
-INSERT INTO `gym` VALUES (1,'Iron Gym','New Delhi','123456789'),(2,'Pulse Fitness','New Delhi','987654321');
+INSERT INTO `gym` VALUES (1,'Iron Gym','New Delhi','123456789'),(2,'Pulse Fitness','New Delhi','987654321'),(101,'Testing gym','Test','987654321');
 /*!40000 ALTER TABLE `gym` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -115,7 +115,7 @@ DROP TABLE IF EXISTS `gym_admin`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `gym_admin` (
-  `admin_id` int NOT NULL,
+  `admin_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `phone` varchar(15) DEFAULT NULL,
@@ -124,7 +124,7 @@ CREATE TABLE `gym_admin` (
   UNIQUE KEY `email` (`email`),
   KEY `gym_id` (`gym_id`),
   CONSTRAINT `gym_admin_ibfk_1` FOREIGN KEY (`gym_id`) REFERENCES `gym` (`gym_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -170,7 +170,7 @@ DROP TABLE IF EXISTS `member`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `member` (
-  `member_id` int NOT NULL,
+  `member_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `date_of_birth` date DEFAULT NULL,
   `gender` varchar(10) DEFAULT NULL,
@@ -181,7 +181,7 @@ CREATE TABLE `member` (
   UNIQUE KEY `email` (`email`),
   KEY `idx_member_gym` (`gym_id`),
   CONSTRAINT `member_ibfk_1` FOREIGN KEY (`gym_id`) REFERENCES `gym` (`gym_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -232,7 +232,7 @@ DROP TABLE IF EXISTS `membership_plan`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `membership_plan` (
-  `plan_id` int NOT NULL,
+  `plan_id` int NOT NULL AUTO_INCREMENT,
   `plan_name` varchar(50) NOT NULL,
   `duration` int NOT NULL,
   `price` decimal(10,2) DEFAULT NULL,
@@ -242,7 +242,7 @@ CREATE TABLE `membership_plan` (
   KEY `gym_id` (`gym_id`),
   CONSTRAINT `membership_plan_ibfk_1` FOREIGN KEY (`gym_id`) REFERENCES `gym` (`gym_id`),
   CONSTRAINT `membership_plan_chk_1` CHECK ((`price` > 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -291,7 +291,7 @@ DROP TABLE IF EXISTS `payment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `payment` (
-  `payment_id` int NOT NULL,
+  `payment_id` int NOT NULL AUTO_INCREMENT,
   `payment_date` date NOT NULL,
   `amount` decimal(10,2) DEFAULT NULL,
   `payment_method` varchar(50) DEFAULT NULL,
@@ -301,7 +301,7 @@ CREATE TABLE `payment` (
   KEY `idx_payment_member` (`member_id`),
   CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `membership` (`member_id`),
   CONSTRAINT `payment_chk_1` CHECK ((`amount` > 0))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -378,7 +378,7 @@ DROP TABLE IF EXISTS `trainer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `trainer` (
-  `trainer_id` int NOT NULL,
+  `trainer_id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `specialization` varchar(100) DEFAULT NULL,
   `phone` varchar(15) DEFAULT NULL,
@@ -387,7 +387,7 @@ CREATE TABLE `trainer` (
   PRIMARY KEY (`trainer_id`),
   KEY `gym_id` (`gym_id`),
   CONSTRAINT `trainer_ibfk_1` FOREIGN KEY (`gym_id`) REFERENCES `gym` (`gym_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -408,7 +408,7 @@ DROP TABLE IF EXISTS `workout_session`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `workout_session` (
-  `session_id` int NOT NULL,
+  `session_id` int NOT NULL AUTO_INCREMENT,
   `workout_date` date NOT NULL,
   `duration` int DEFAULT NULL,
   `member_id` int NOT NULL,
@@ -466,4 +466,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-03-10 21:51:35
+-- Dump completed on 2026-03-11  0:06:45
