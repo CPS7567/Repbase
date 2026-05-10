@@ -8,7 +8,7 @@ class AuthDatabaseManager:
         self.db_config = {
             "host": "localhost",
             "user": "root",
-            "password": "harsh@102",
+            "password": "CPS@root009",
             "database": "authing"
         }
 
@@ -75,6 +75,8 @@ class AuthDatabaseManager:
     def login_user(self, username, password_hash):
 
         conn = self._get_connection()
+        if not conn:
+                    return {"status": "error", "message": "Database connection failed"}
 
         try:
             cursor = conn.cursor(dictionary=True)
@@ -140,6 +142,9 @@ class AuthDatabaseManager:
     def change_password(self, user_id, new_password_hash):
 
         conn = self._get_connection()
+        if not conn:
+            return {"status": "error", "message": "Database connection failed"}
+
 
         try:
             cursor = conn.cursor()
@@ -173,11 +178,15 @@ class AuthDatabaseManager:
     # DELETE USER
     # ==========================================
 
-    def delete_user(self, username):
+    def delete_user(self, userid):
 
         query = """
         DELETE FROM users_auth
-        WHERE username=%s
+        WHERE user_id=%s
         """
 
-        return self._execute_write(query, (username,))
+        return self._execute_write(query, (userid,))
+
+
+auth  = AuthDatabaseManager()
+
